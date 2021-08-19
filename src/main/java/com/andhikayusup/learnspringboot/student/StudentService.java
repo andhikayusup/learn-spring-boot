@@ -1,7 +1,10 @@
 package com.andhikayusup.learnspringboot.student;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -36,5 +39,26 @@ public class StudentService {
 		}
 
 		studentRepository.deleteById(studentId);
+	}
+
+	@Transactional
+	public Student updateStudent(Long studentId, String name, String email){
+		Student student = studentRepository.findById(studentId).orElseThrow(
+			() -> new IllegalStateException("Student not found")
+		);
+
+		if (name != null &&
+				name.length() > 0 &&
+				!Objects.equals(student.getName(), name)) {
+			student.setName(name);
+		}
+
+		if (email != null &&
+				email.length() > 0 &&
+				!Objects.equals(student.getEmail(), email)) {
+			student.setEmail(email);
+		}
+
+		return student;
 	}
 }
